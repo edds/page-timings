@@ -17,12 +17,14 @@
       };
     },
     renderAccounts: function(data){
-      template(manager.selects.$accounts, 'select-options', { object: 'account', options: data });
-      manager.selects.$accounts
+      var $select = manager.selects.$accounts;
+      template($select, 'select-options', { object: 'account', options: data });
+      $select
         .attr('disabled', false)
         .on('change', function(e){
           manager.reset();
-          manager.accountId = manager.selects.$accounts.val();
+          manager.accountId = $select.val();
+          cache('last-account', manager.accountId);
           if(manager.accountId !== ''){
             manager.selects.$properties.attr('disabled', 'disabled');
             manager.propertyId = false;
@@ -31,32 +33,45 @@
             user.getProperties(manager.accountId, manager.renderProperties);;
           }
         });
+      if(cache('last-account') && $select.find('[value='+cache('last-account')+']').length > 0){
+        $select.val(cache('last-account')).trigger('change');
+      }
     },
     renderProperties: function(data){
-      template(manager.selects.$properties, 'select-options', { object: 'property',  options: data });
-      manager.selects.$properties
+      var $select = manager.selects.$properties
+      template($select, 'select-options', { object: 'property',  options: data });
+      $select
         .attr('disabled', false)
         .on('change', function(e){
           manager.reset();
-          manager.propertyId = manager.selects.$properties.val();
+          manager.propertyId = $select.val();
+          cache('last-property', manager.propertyId);
           if(manager.propertyId !== ''){
             manager.selects.$profiles.attr('disabled', 'disabled');
             manager.profileId = false;
             user.getProfiles(manager.accountId, manager.propertyId, manager.renderProfiles);
           }
         });
+      if(cache('last-property') && $select.find('[value='+cache('last-property')+']').length > 0){
+        $select.val(cache('last-property')).trigger('change');
+      }
     },
     renderProfiles: function(data){
-      template(manager.selects.$profiles, 'select-options', { object: 'property', options: data });
-      manager.selects.$profiles
+      var $select = manager.selects.$profiles
+      template($select, 'select-options', { object: 'profile', options: data });
+      $select
         .attr('disabled', false)
         .on('change', function(e){
           manager.reset();
-          manager.profileId = manager.selects.$profiles.val();
+          manager.profileId = $select.val();
+          cache('last-profile', manager.profileId);
           if(manager.profileId !== ''){
             manager.loadStats();
           }
         });
+      if(cache('last-profile') && $select.find('[value='+cache('last-profile')+']').length > 0){
+        $select.val(cache('last-profile')).trigger('change');
+      }
     },
     loadStats: function(){
       timings.update(manager.renderTimings, new Date());
