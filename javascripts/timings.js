@@ -45,12 +45,13 @@
     getDataByTime: function(){
       return timings.data.map(timings.getDataByTimeRow);
     },
-    getDataByTimingRow: function(types){
-      return [types[0], timings.data.map(function(row){ 
-        return types.reduce(function(memo, value){
-          return memo + row[value]; 
-        }, 0);
-      })];
+    getDataByTimingRow: function(type){
+      return {
+        name: type, 
+        values: timings.data.map(function(row){ 
+          return row[type];
+        })
+      };
     },
 
     getDataByTiming: function(){
@@ -65,9 +66,12 @@
       ];
       var i, out = [];
       for(i=0; i<types.length; i++){
-        out.push( timings.getDataByTimingRow(types.slice(0, i+1).reverse()));
+        out.push( timings.getDataByTimingRow(types[i]) );
       }
-      out.push( ['ga:avgPageLoadTime', timings.data.map(function(row){ return row['ga:avgPageLoadTime']; })] );
+      //out.push({
+      //  name: 'ga:avgPageLoadTime', 
+      //  values: timings.data.map(function(row){ return row['ga:avgPageLoadTime']; })
+      //});
       return out;
     },
     endpoint: function(startDate, endDate){

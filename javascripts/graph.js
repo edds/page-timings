@@ -36,22 +36,29 @@
           .attr('x1', d[0]).attr('x2', d[1]).attr('y1', d[2]).attr('y2', d[3]);
       });
 
-      graph.area= d3.svg.area()
+      graph.area = d3.svg.area()
         .interpolate('step-after')
         .x(function(d, i) { return graph.x(i); })
-        .y0(graph.height)
-        .y1(function(d, i) { return graph.y(d); });
+        .y0(function(d, i) { return graph.y(d.y0); })
+        .y1(function(d, i) { return graph.y(d.y0 + d.y); });
+
+      graph.stack = d3.layout.stack()
+        .values(function(d){ return d.values; });
     },
     maxTime: function(data){
-      debugger;
-      return d3.max(data[0][1]);
+      return d3.max(data[data.length-1].values, function(d){ return d.y0 + d.y; });
     },
     show: function(data){
       var timings, ticks, tick;
 
-      data = data.reverse();
+      data = data.map(function(line){ return {
+        name: line.name,
+        values: line.values.map(function(column){ return { y: column }; })
+      }; });
+      data = graph.stack(data);
+
       graph.x = d3.scale.linear()
-        .domain([data[1][1].length, 0])
+        .domain([data[1].values.length, 0])
         .range([graph.width, 0]);
       graph.y = d3.scale.linear()
         .domain([0, graph.maxTime(data)])
@@ -59,64 +66,44 @@
 
       // add new data to the timings 
       timings = graph.timings.selectAll('.timing')
-        .data(data, function(d){ return d[0]; })
+        .data(data, function(d){ return d.name; })
 
       // add new elemnts not matched by previous data
       timings = timings.enter()
         .append('g').attr('class', 'timing')
 
-      // add new text nodes
- //     timings.append("text")
- //       .datum(function(d) { return {name: d.os+' -  '+d.browser+' - '+d.version }; })
- //       .attr("x", 3)
- //       .attr("dy", ".35em")
- //       .attr('class', 'text')
- //       .text(function(d) { return d.name; });
-
       // add new lines
       timings.append('path')
         .attr('class', 'area')
         .attr('stroke', function(d,i){ return graph.colours(i); })
-        .style('fill', function(d,i){ return d3.rgb(graph.colours(i)).brighter(2); });
-
-//      browsers.select('.text').transition()
-//        .attr("transform", function(d){ return "translate("+graph.width+","+graph.y(d.days[d.days.length-1])+")"; })
+        .style('fill', function(d,i){ return graph.colours(i); });
 
       // update all the lines to have the new data
       timings.select('.area').transition()
-        .attr('d', function(d){ return graph.area(d[1]); });
+        .attr('d', function(d){ return graph.area(d.values); });
 
-      timings.on('click', function(){
-        var timing= d3.select(this);
-        if(timing.attr('class').indexOf('active') < -1){
-          timing.attr('class', 'browser')
-        } else {
-          timming.attr('class', 'browser active');
-        }
-      });
-
-      ticks = graph.axis.selectAll('.x-tick')
-        .data(data, function(d){ return d[0]; })
-
-      tick = ticks.enter()
-        .append('g').attr('class', 'x-tick')
-      tick.append('svg:line')
-        .attr('class', 'line')
-        .attr('y1', 0)
-        .attr('y2', graph.height);
-      tick.append('text')
-        .attr('class', 'text')
-        .attr('text-anchor', 'start')
-        .attr("dy", '15px')
-        .attr('transform', function(d, i) { return 'translate(0,'+graph.height+') rotate(45)'; });
-
-      ticks.select('.line').transition()
-        .attr('x1', function(d, i){ return graph.x(i)+.5 })
-        .attr('x2', function(d, i){ return graph.x(i)+.5 });
-      ticks.select('.text').transition()
-        .attr('transform', function(d, i) { return 'translate('+graph.x(i)+','+graph.height+') rotate(45)'; })
-        .text(function(d){ return d; });
-
+//      ticks = graph.axis.selectAll('.x-tick')
+//        .data(data, function(d){ return d.name; })
+//
+//      tick = ticks.enter()
+//        .append('g').attr('class', 'x-tick')
+//      tick.append('svg:line')
+//        .attr('class', 'line')
+//        .attr('y1', 0)
+//        .attr('y2', graph.height);
+//      tick.append('text')
+//        .attr('class', 'text')
+//        .attr('text-anchor', 'start')
+//        .attr("dy", '15px')
+//        .attr('transform', function(d, i) { return 'translate(0,'+graph.height+') rotate(45)'; });
+//
+//      ticks.select('.line').transition()
+//        .attr('x1', function(d, i){ return graph.x(i)+.5 })
+//        .attr('x2', function(d, i){ return graph.x(i)+.5 });
+//      ticks.select('.text').transition()
+//        .attr('transform', function(d, i) { return 'translate('+graph.x(i)+','+graph.height+') rotate(45)'; })
+//        .text(function(d){ return d; });
+//
 //       ticks = graph.axis.selectAll('.y-tick')
 //         .data(graph.y.ticks(5))
 // 

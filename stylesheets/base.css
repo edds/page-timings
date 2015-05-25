@@ -54,7 +54,8 @@ svg text {
   font-family: sans-serif; }
 svg path,
 svg line {
-  fill: none; }
+  fill: none;
+  fill-opacity: 0.7; }
 svg .axis line {
   stroke: #ccc; }
 svg .axis .x-tick line,
