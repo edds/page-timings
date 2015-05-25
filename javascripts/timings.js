@@ -5,16 +5,46 @@
     data: [],
     headers: [],
     rowTitles: [
-      'time',
+      'date - time',
       'redirection',
       'domain lookup',
       'server connection',
       'server response',
       'page download',
+      'dom content loaded',
       'dom interactive',
-      'on load',
       'page complete'
     ],
+    info: {
+      'ga:avgRedirectionTime': {
+        title: 'Avg. Redirection Time',
+        body: 'The average amount of time (in seconds) spent in redirects before fetching this page. If there are no redirects, the value for this metric is expected to be 0.', 
+      },
+      'ga:avgDomainLookupTime': {
+        title: 'Avg. Domian Lookup Time',
+        body: 'The average amount of time (in seconds) spent in DNS lookup for this page.'
+      },
+      'ga:avgServerConnectionTime': {
+        title: 'Avg. Server Connection Time',
+        body: 'The average amount of time (in seconds) spent in establishing TCP connection for this page.'
+      },
+      'ga:avgServerResponseTime': {
+        title: 'Avg. Server Response Time',
+        body: 'The average amount of time (in seconds) your server takes to respond to a user request, including the network time from user\'s location to your server.'
+      },
+      'ga:avgPageDownloadTime': {
+        title: 'Avg. Page Download Time',
+        body: 'The average amount of time (in seconds) to download this page.'
+      },
+      'ga:avgDomContentLoadedTime': {
+        title: 'Avg. Document Content Loaded Time',
+        body: 'The average time (in seconds) it takes the browser to parse the document.',
+      },
+      'domContentLoadedTimeToInteractiveTime': {
+        title: 'Avg. Document Interactive Time',
+        body: 'The average time (in seconds) it takes the browser to parse the document and execute deferred and parser-inserted scripts including the network time from the user\'s location to your server.'
+      }
+    },
 
     rowToObj: function(row){
       var out= {}, column,columns, data;
@@ -26,7 +56,7 @@
         }
       }
       out['domContentLoadedTimeToInteractiveTime'] = out['ga:avgDomContentLoadedTime'] - out['ga:avgDomInteractiveTime']; 
-      out.name = out["ga:day"] + " - " + out["ga:hour"];
+      out.name = out["ga:day"] + " - " + out["ga:hour"] +":00";
       return out;
     },
     getDataByTimeRow: function(row){
@@ -61,7 +91,7 @@
         'ga:avgServerConnectionTime',
         'ga:avgServerResponseTime',
         'ga:avgPageDownloadTime',
-        'ga:avgDomInteractiveTime',
+        'ga:avgDomContentLoadedTime',
         'domContentLoadedTimeToInteractiveTime'
       ];
       var i, out = [];

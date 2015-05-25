@@ -42,6 +42,17 @@ header {
       float: left;
       display: block; }
 
+#graph {
+  position: relative;
+  max-width: 870px;
+  margin: 0 auto; }
+  #graph .info {
+    position: absolute;
+    right: 10px;
+    top: 30px;
+    width: 200px;
+    text-align: left; }
+
 table.timings {
   width: 100%;
   text-align: left; }
@@ -55,7 +66,9 @@ svg text {
 svg path,
 svg line {
   fill: none;
-  fill-opacity: 0.7; }
+  fill-opacity: 0.5; }
+svg path:hover {
+  fill-opacity: 1; }
 svg .axis line {
   stroke: #ccc; }
 svg .axis .x-tick line,

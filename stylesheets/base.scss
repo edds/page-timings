@@ -59,6 +59,19 @@ header {
     }
   }
 }
+#graph {
+  position: relative;
+  max-width: 870px;
+  margin: 0 auto;
+
+  .info {
+    position: absolute;
+    right: 10px;
+    top: 30px;
+    width: 200px;
+    text-align: left;
+  }
+}
 table.timings {
   width: 100%;
   text-align: left;
@@ -81,7 +94,10 @@ svg {
   path,
   line {
     fill: none;
-    fill-opacity: 0.7;
+    fill-opacity: 0.5;
+  }
+  path:hover {
+    fill-opacity: 1;
   }
   .axis {
     line {

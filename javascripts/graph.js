@@ -44,6 +44,8 @@
 
       graph.stack = d3.layout.stack()
         .values(function(d){ return d.values; });
+
+      graph.info = d3.select('#graph').append('div').attr('class', 'info');
     },
     maxTime: function(data){
       return d3.max(data[data.length-1].values, function(d){ return d.y0 + d.y; });
@@ -70,7 +72,9 @@
 
       // add new elemnts not matched by previous data
       timings = timings.enter()
-        .append('g').attr('class', 'timing')
+        .append('g')
+          .attr('class', 'timing')
+          .attr('data-name', function(d){ return d.name; });
 
       // add new lines
       timings.append('path')
@@ -82,12 +86,16 @@
       timings.select('.area').transition()
         .attr('d', function(d){ return graph.area(d.values); });
 
+      timings.on('mouseover', function(){
+        var timing = d3.select(this);
+        graph.showInfo(timing.attr('data-name'));
+      });
+
       var headingTickInterval = Math.floor( headers.length / 14);
       var headingData = headers.filter(function(d, i) { return !(i % headingTickInterval); })
 
       ticks = graph.axis.selectAll('.x-tick')
         .data(headingData)
-
 
       tick = ticks.enter()
         .append('g').attr('class', 'x-tick')
@@ -129,6 +137,10 @@
          .attr('y2', function(d, i){ return graph.y(d)+.5 });
        ticks.select('.text').transition()
          .attr('transform', function(d, i) { return 'translate(-2, '+graph.y(d)+')'; });
+    },
+    showInfo: function(type){
+      var info = timings.info[type]
+      graph.info.html("<h2>"+info.title+"</h2><p>"+info.body+"</p>");
     }
   };
   window.graph = graph;
