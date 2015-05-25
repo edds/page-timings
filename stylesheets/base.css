@@ -42,12 +42,12 @@ header {
       float: left;
       display: block; }
 
-table.matrix {
+table.timings {
   width: 100%;
   text-align: left; }
-  table.matrix thead th {
+  table.timings thead th {
     border-bottom: 2px solid; }
-  table.matrix tbody tr:nth-child(2n) td {
+  table.timings tbody tr:nth-child(2n) td {
     background: #eee; }
 
 svg text {

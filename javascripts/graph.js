@@ -48,7 +48,7 @@
     maxTime: function(data){
       return d3.max(data[data.length-1].values, function(d){ return d.y0 + d.y; });
     },
-    show: function(data){
+    show: function(data, headers){
       var timings, ticks, tick;
 
       data = data.map(function(line){ return {
@@ -82,49 +82,53 @@
       timings.select('.area').transition()
         .attr('d', function(d){ return graph.area(d.values); });
 
-//      ticks = graph.axis.selectAll('.x-tick')
-//        .data(data, function(d){ return d.name; })
-//
-//      tick = ticks.enter()
-//        .append('g').attr('class', 'x-tick')
-//      tick.append('svg:line')
-//        .attr('class', 'line')
-//        .attr('y1', 0)
-//        .attr('y2', graph.height);
-//      tick.append('text')
-//        .attr('class', 'text')
-//        .attr('text-anchor', 'start')
-//        .attr("dy", '15px')
-//        .attr('transform', function(d, i) { return 'translate(0,'+graph.height+') rotate(45)'; });
-//
-//      ticks.select('.line').transition()
-//        .attr('x1', function(d, i){ return graph.x(i)+.5 })
-//        .attr('x2', function(d, i){ return graph.x(i)+.5 });
-//      ticks.select('.text').transition()
-//        .attr('transform', function(d, i) { return 'translate('+graph.x(i)+','+graph.height+') rotate(45)'; })
-//        .text(function(d){ return d; });
-//
-//       ticks = graph.axis.selectAll('.y-tick')
-//         .data(graph.y.ticks(5))
-// 
-//       tick = ticks.enter()
-//         .append('g').attr('class', 'y-tick')
-//       tick.append('svg:line')
-//         .attr('class', 'line')
-//         .attr('x1', 0)
-//         .attr('x2', graph.width);
-//       tick.append('text')
-//         .attr('class', 'text')
-//         .attr('text-anchor', 'end')
-//         .attr('dy', '.4em')
-//         .attr('transform', function(d, i) { return 'translate(-2,0)'; })
-//         .text(function(d){ return d +'%'; });
-// 
-//       ticks.select('.line').transition()
-//         .attr('y1', function(d, i){ return graph.y(d)+.5 })
-//         .attr('y2', function(d, i){ return graph.y(d)+.5 });
-//       ticks.select('.text').transition()
-//         .attr('transform', function(d, i) { return 'translate(-2, '+graph.y(d)+')'; });
+      var headingTickInterval = Math.floor( headers.length / 14);
+      var headingData = headers.filter(function(d, i) { return !(i % headingTickInterval); })
+
+      ticks = graph.axis.selectAll('.x-tick')
+        .data(headingData)
+
+
+      tick = ticks.enter()
+        .append('g').attr('class', 'x-tick')
+      tick.append('svg:line')
+        .attr('class', 'line')
+        .attr('y1', 0)
+        .attr('y2', graph.height);
+      tick.append('text')
+        .attr('class', 'text')
+        .attr('text-anchor', 'start')
+        .attr("dy", '15px')
+        .attr('transform', function(d, i) { return 'translate(0,'+graph.height+') rotate(45)'; });
+
+      ticks.select('.line').transition()
+        .attr('x1', function(d, i){ return graph.x(i*headingTickInterval)+.5 })
+        .attr('x2', function(d, i){ return graph.x(i*headingTickInterval)+.5 });
+      ticks.select('.text').transition()
+        .attr('transform', function(d, i) { return 'translate('+graph.x(i*headingTickInterval)+','+graph.height+') rotate(45)'; })
+        .text(function(d){ return d; });
+
+       ticks = graph.axis.selectAll('.y-tick')
+         .data(graph.y.ticks(5))
+ 
+       tick = ticks.enter()
+         .append('g').attr('class', 'y-tick')
+       tick.append('svg:line')
+         .attr('class', 'line')
+         .attr('x1', 0)
+         .attr('x2', graph.width);
+       tick.append('text')
+         .attr('class', 'text')
+         .attr('text-anchor', 'end')
+         .attr('dy', '.4em')
+         .attr('transform', function(d, i) { return 'translate(-2,0)'; })
+         .text(function(d){ return d +'s'; });
+ 
+       ticks.select('.line').transition()
+         .attr('y1', function(d, i){ return graph.y(d)+.5 })
+         .attr('y2', function(d, i){ return graph.y(d)+.5 });
+       ticks.select('.text').transition()
+         .attr('transform', function(d, i) { return 'translate(-2, '+graph.y(d)+')'; });
     }
   };
   window.graph = graph;

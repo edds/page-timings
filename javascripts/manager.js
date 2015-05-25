@@ -88,7 +88,7 @@
       });
 
       graph.init();
-      graph.show(timings.getDataByTiming());
+      graph.show(timings.getDataByTiming(), timings.getTimePoints());
     },
     period: function(){
       return parseInt(manager.selects.$period.val(), 10);

@@ -74,6 +74,11 @@
       //});
       return out;
     },
+
+    getTimePoints: function(){
+      return timings.data.map(function(row){ return row.name; })
+    },
+
     endpoint: function(startDate, endDate){
       return "https://www.googleapis.com/analytics/v3/data/ga?"
       + "ids=ga:"+ manager.profileId +"&"
